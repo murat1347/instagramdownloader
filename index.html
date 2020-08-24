@@ -1,0 +1,250 @@
+<html>
+<head><style>
+/* Main stuff */
+html {
+  height: 100%;
+  overflow:hidden;
+	text-align: center;
+}
+body {
+  font-family: 'Quicksand', sans-serif;
+  margin-top: 20px;
+  color: white;
+  font-size: 1.2em;
+  background: #1e5799; /* Old browsers */
+  background: -moz-linear-gradient(-45deg, #1e5799 0%, #d321a4 63%, #ffef63 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(-45deg, #1e5799 0%,#d321a4 63%,#ffef63 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(135deg, #1e5799 0%,#d321a4 63%,#ffef63 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#ffef63',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+
+#murat {
+  text-align: center;
+}
+
+#instagram {
+	-webkit-filter: brightness(0.25);
+	filter: brightness(3);
+	height: 60px;
+	width: auto;
+}
+#weatherTitle {
+  margin-top: -30px;
+  font-size: 2.6em;
+  font-weight:700;
+  color: #00fff6;
+  margin-bottom: -20px;
+}
+#weather-btn {
+  background-color: transparent;
+  color: white;
+  font-size: 3em;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  padding: 10px 14px ;
+  margin-bottom: -30px;
+}
+#weather-btn:hover {
+  background-color: rgb(254, 253, 253, 0.1);
+  box-shadow: 0px 15px 20px rgba(53, 53, 53, 0.4);
+  color: #fff;
+  transform: translateY(-7px);
+}
+#instapics {
+	margin: 20px auto;
+	position: center;
+	background-color: white;
+	width: 400px;
+	height: 400px;
+	-moz-border-radius: 6px; /* FF1+ */
+-webkit-border-radius: 6px; /* Saf3-4 */
+border-radius: 6px; /* Opera 10.5, IE 9, Saf5, Chrome */
+box-shadow: 0px 0px 34px rgba(0, 0, 0, 0.4);
+}
+#pic {
+	margin-top: 20px;
+	width: 360px;
+	height: 360px;
+	-moz-border-radius: 6px; /* FF1+ */
+	-webkit-border-radius: 6px; /* Saf3-4 */
+	border-radius: 6px; /* Opera 10.5, IE 9, Saf5, Chrome */
+	-webkit-animation: fadein 3s; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein 3s; /* Firefox < 16 */
+        -ms-animation: fadein 3s; /* Internet Explorer */
+         -o-animation: fadein 3s; /* Opera < 12.1 */
+            animation: fadein 3s;
+}
+#credits {
+	color: white !important;
+}
+
+ /* unvisited link */
+a:link {
+    color: white;
+}
+</style>
+<script type="text/javascript">
+
+
+//Global Variables
+var lat = "37.7576793";
+var lon = "-122.50764";
+var weatherKey = '0f4ed8de35b6f8874bd6fbaf5b64e720/';
+var weatherUrl = 'https://api.darksky.net/forecast/';	
+
+//Weather Photos
+var photos = {'clear-day': 'https://untappedcities-wpengine.netdna-ssl.com/wp-content/uploads/2015/03/UntappedCities-BigScreen-Instagram-Contest-Photo-NYC-busy-streets-New-York-City-Taxi-People-walking-working-rush-Photogrpahy.jpg', 'clear-night': "https://www.demilked.com/magazine/wp-content/uploads/2015/04/night-sky-landscape-photography-instagram-mikko-lagerstedt-finland-7.jpg", 'rain': "https://s-media-cache-ak0.pinimg.com/originals/b0/8a/8c/b08a8ca3dac4c1892ed589abec8bc55e.jpg", 'snow': "https://cdn2.newsok.biz/cache/sq500-7a3084ac846c807f0017679d3809be84.jpg", 'sleet': "https://s-media-cache-ak0.pinimg.com/736x/62/2e/10/622e10dff2383105ad607322d9b393c4.jpg", 'wind': "http://res.cloudinary.com/nextermedia/image/fetch/w_728/http://gabworthy.com/wp-content/uploads/2015/11/Kuma-dog-sticking-head-out-window-wind-hair.jpg", 'fog': "http://www.poynter.org/wp-content/uploads/2014/01/gormley-fog-instagram.jpg", 'cloudy': "https://s-media-cache-ak0.pinimg.com/736x/fd/7d/a7/fd7da7ec78d1c48ccfba3369b48b5613.jpg", 'partly-cloudy-day': "http://i.dailymail.co.uk/i/pix/2015/11/23/06/2EB5096000000578-3321498-A_city_to_explore_Armed_with_her_pink_balloon_she_took_to_the_st-a-18_1448260945867.jpg", 'partly-cloudy-night': "https://static1.squarespace.com/static/53f261c3e4b0a346314bcae3/53f2adb8e4b009ac85d386b5/55d001a0e4b029ba9e7cbfb2/1439695265546/"};
+
+//API Calls
+$("#weather-btn").click(function(){
+	//Location API
+	$.getJSON('https://freegeoip.net/json/').done(function(location){	
+		$('#country').html(location.country_name);
+		lat = location.latitude;
+		lon = location.longitude;
+	var weatherApi = weatherUrl + weatherKey + lat + "," + lon;
+		
+	//Weather API
+	$.getJSON('https://crossorigin.me/' + weatherApi + "?units=auto").done(function(data){
+		var temp = Math.round(data.currently.temperature),
+				icon = data.currently.icon;
+		$('#description').html(data.currently.summary);
+		$('#temp').html(temp);
+		$("#picPlaceHolder").html('<img id="pic" src=' + photos[icon] + '>');			
+
+  	});
+	});
+});
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+console.log("star1t");
+$("#myForm").submit(function(event) {
+  val = encodeURIComponent(document.getElementById("myId").value);
+  myURL = "https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrsearch="+val+"&prop=extracts&exintro&explaintext&exsentences=1&exlimit=max&callback=?";
+  console.log(myURL);
+  $.getJSON(myURL, function(data) {
+    pages = data.query.pages;
+    var titles = [];
+    var extracts = [];
+    var pageids = [];
+    for (var key in pages) {
+      titles.push(pages[key].title);
+      extracts.push(pages[key].extract);
+      pageids.push(pages[key].pageid);
+    }
+    var html = "";
+    for (i = 0; i < titles.length; i++) {
+      html += '<div class="panel panel-default"> <div class="panel-heading"> <h3 class="panel-title"><a href="https://en.wikipedia.org/?curid=';
+      html += pageids[i];
+      html += '">'
+      html += titles[i];
+      html += '</a></h3> </div> <div class="panel-body">';
+      html += extracts[i]
+      html += '</div></div>'
+    }
+    $("#myDiv").html(html);
+    
+    });
+  event.preventDefault();
+});
+function random() {
+  console.log("hey");
+  myURL = "https://en.wikipedia.org/w/api.php?action=query&&format=json&list=random&rnlimit=1&callback=?";
+  $.getJSON(myURL, function(data) {
+    var id = data.query.random[0].id
+    console.log("s"+id);
+    var url = "https://en.wikipedia.org/?curid=" + id;
+    window.open(url,"_self");  
+    
+            
+    
+  });
+  
+}</script>
+</head>
+<body>
+<div>   
+<!-- Branding -->
+	<div>
+		<img id="instagram" src="https://cdn.worldvectorlogo.com/logos/instagram-2.svg" alt="Instagram">
+		<p id="weatherTitle" ></p>
+	</div> 
+ <!-- Click to action -->
+  <div>
+		 <button id="weather-btn" class= "button fa fa-instagram"></button> 
+  </div>
+  <div class="fa fa-arrow-up" style="margin-bottom: -10;">
+	</div>
+	<br><br>
+  <div style="background-color: rgba(0, 0, 0, 0.4)">
+      <p style="color: #f3ff8c; padding: 5px; font-size: 0.8em; font-weight:700; letter-spacing: 4px;">BESTER FAST İNSTAGRAM DONWLOADER ...</p>
+  </div> 
+ <!-- Weather Details --> 
+  <div>
+		<div style="color: #00DB89; font-size: 12px; font-weight:700; letter-spacing: 4px;">CURRENT CONDITIONS</div>
+      <span id="country"></span><br>
+      <span id="description"></span><br>
+			<span id="temp"></span><span></span>
+  </div>    
+
+  <form method="POST" aciton="#">
+  <input name="mimar" type="text" placeholder = "INSTAGRAM LINK..." required>
+  <button id="Click" type="submit">SEND</button>
+</form>
+
+
+
+
+
+
+
+<!-- Instagram Photos based on Geolocation -->
+      
+	<div id="instapics" style="text-align: center;">
+		<div id="picPlaceHolder">  
+				<img id="pic" src= "https://image.freepik.com/free-vector/instagram-gradient-background_1045-539.jpg">
+		</div>
+	</div>  
+	<div>
+		<div id= "credits" style="margin-bottom: 20px;">
+				<a href="#">TİLKİ YAZILIM HİZMETLERİ Copyright © 2018 Tüm Hakları Saklıdır.</a>
+		</div>   
+	</div>
+
+</div>
+
+</body></html>
